@@ -11,4 +11,5 @@ App made using the following frameworks and languages:
 - HTML
 - Maven
 - Java 11
+- MySQL
 
