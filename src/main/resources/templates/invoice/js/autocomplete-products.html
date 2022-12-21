@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+
+<body>
+    <script type="text/javascript" th:fragment="javascript">
+        document.getElementById("search_product").value = '';
+
+        $(document).ready(function () {
+
+            let urlAjax = $("#urlAjax").val();
+            $("#search_product").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: urlAjax + request.term,
+                        dataType: "json",
+                        data: {
+                            term: request.term
+                        },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return {
+                                    value: item.id,
+                                    label: item.name,
+                                    price: item.price,
+                                };
+                            }));
+                        },
+                    });
+                },
+                select: function (event, ui) {
+                    // $("#search_product").val(ui.item.label);
+
+                    if (itemsHelper.hasProduct(ui.item.value)) {
+                        itemsHelper.increaseQuantity(ui.item.value, ui.item.price);
+                        return false;
+                    }
+
+                    let line = $("#invoiceItemsTemplate").html();
+
+                    line = line.replace(/{ID}/g, ui.item.value);
+                    line = line.replace(/{NAME}/g, ui.item.label);
+                    line = line.replace(/{PRICE}/g, ui.item.price);
+
+                    $("#loadProductItems tbody").append(line);
+                    itemsHelper.calculateAmount(ui.item.value, ui.item.price, 1);
+
+                    return false;
+                }
+            });
+
+            $("form[name='invoiceForm']").submit(function () {
+                
+                $("#invoiceItemsTemplate").remove();
+                return;
+            });
+
+        });
+
+        let itemsHelper = {
+            calculateAmount: function (id, price, quantity) {
+                $("#total_amount_" + id).html(parseInt(price) * parseInt(quantity));
+                this.calculateInvoiceTotal();
+            },
+            hasProduct: function (id) {
+                let result = false;
+
+                $('input[name="item_id[]"]').each(function () {
+                    if (parseInt(id) == parseInt($(this).val())) {
+                        result = true;
+                    }
+                });
+
+                return result;
+            },
+            increaseQuantity: function (id, price) {
+                let quantity = $("#quantity_" + id).val() ? parseInt($("#quantity_" + id).val()) : 0;
+                $("#quantity_" + id).val(++quantity);
+                this.calculateAmount(id, price, quantity);
+            },
+            deleteInvoiceLine: function (id) {
+                $("#row_" + id).remove();
+                this.calculateInvoiceTotal();
+            },
+            calculateInvoiceTotal: function () {
+                let total = 0;
+
+                $('span[id^="total_amount_"]').each(function () {
+                    total += parseInt($(this).html());
+                });
+
+                $('#invoice_total').html(total);
+            }
+
+        }
+
+
+    </script>
+</body>
+
+</html>

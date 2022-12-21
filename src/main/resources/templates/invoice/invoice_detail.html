@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="layout/layout :: head">
+    <meta content="text/html;" http-equiv="content-type" charset="utf-8">
+</head>
+
+<body>
+    <header th:replace="layout/layout :: header"></header>
+
+    <div class="container py-4 d-flex justify-content-center">
+        <div class="card mb-3 bg-light text-black w-75">
+            <div class="card-header text-white bg-dark"  th:text="${title}"></div>
+            <div class="card-body text-dark bg-light row g-0 mb-3">
+
+                <h4 class="card-title">
+                    <a class="btn btn-secondary btn-xs mb-3" th:href="@{'/detail/' + ${invoice.customer.id}}"
+                    th:utext="#{text.global.back}">&laquo;volver</a>
+                    <a class="btn btn-danger btn-xs float-end mx-2" th:href="@{'/invoice/detail/' + ${invoice.id}(format=pdf)}">PDF</a>
+                    <a class="btn btn-success btn-xs float-end" th:href="@{'/invoice/detail/' + ${invoice.id}(format=xlsx)}">XLS</a>
+                </h4>
+
+                <ul class="list-group my-2">
+                    <li style="background-color: #0b5ed7; color: white;" class="list-group-item list-group-item-light"
+                        th:text="#{text.invoice.detail.data.customer}"></li>
+                    <li class="list-group-item list-group-item-light d-flex" th:text="${invoice.customer}"></li>
+                    <li class="list-group-item list-group-item-light d-flex" th:text="${invoice.customer.email}">
+                    </li>
+                </ul>
+
+                <ul class="list-group my-2">
+                    <li style="background-color: #0a58ca; color: white;" class="list-group-item list-group-item-light"
+                        th:text="#{text.invoice.detail.data.invoice}"></li>
+                    <li class="list-group-item list-group-item-light d-flex"
+                        th:text="#{text.customer.invoice.sheet} + ': ' + ${invoice.id}">
+                    </li>
+                    <li class="list-group-item list-group-item-light d-flex "
+                        th:text="#{text.customer.invoice.description} + ': '  + ${invoice.description}"></li>
+                    <li class="list-group-item list-group-item-light d-flex "
+                        th:text="#{text.customer.invoice.date} + ': ' + ${invoice.createAt}"></li>
+                </ul>
+
+                <div class="alert alert-info my-4" th:if="${#lists.isEmpty(invoice.items)}"
+                    th:text="#{text.invoice.detail.no.lines} + ' ' + ${invoice.description}"></div>
+
+                <table class="table table-striped table-hover table-bordered my-3 mb-3">
+                    <thead>
+                        <tr>
+                            <th th:text="#{text.invoice.form.item.name}">Producto</th>
+                            <th th:text="#{text.invoice.form.item.price}">Precio</th>
+                            <th th:text="#{text.invoice.form.item.quantity}">Cantidad</th>
+                            <th th:text="#{text.invoice.form.item.total}">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each=" line : ${invoice.items}">
+                            <td th:text="${line.product.name}"></td>
+                            <td th:text="${line.product.price}"></td>
+                            <td th:text="${line.quantity}"></td>
+                            <td th:text="${line.getAmount()}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            <!--class="d-flex p-2 badge bg-danger text-black" -->
+            <h6 class="float-right">
+                <span th:text="#{text.invoice.form.total}">Total factura</span>: <span th:text="${invoice.totalInvoice}"
+                    class="m-2 badge bg-warning rounded-pill"></span>
+            </h6>
+
+                <div style="width: 18rem;" class="card d-flex border-primary bg-light mb-4">
+                    <div class="card-header">
+                        <h6 class="card-title" th:text="#{text.invoice.form.note}">Observaciones</h6>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text" th:if="${not #strings.isEmpty(invoice.note)}" th:text="${invoice.note}">
+                        </p>
+                        <h4 class="card-title" th:if="${#strings.isEmpty(invoice.note)}"
+                            th:text="#{text.invoice.detail.no.notes}"></h4>
+                    </div>
+                </div>
+
+                <h4 class="card-title">
+                    <a class="btn btn-secondary btn-xs mb-3" th:href="@{'/detail/' + ${invoice.customer.id}}"
+                        th:utext="#{text.global.back}">&laquo;volver</a>
+                </h4>
+            </div>
+        </div>
+    </div>
+
+</body>
+<footer th:replace="layout/layout :: footer"></footer>
+
+</body>
+
+</html>

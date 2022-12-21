@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="layout/layout :: head">
+    <meta content="text/html;" http-equiv="content-type" charset="utf-8">
+</head>
+
+<body>
+    <div id="i18n_eliminar_factura" th:text="#{text.customer.invoice.deleteOk}" style="display: none;"></div>
+
+    <header th:replace="layout/layout :: header"></header>
+
+    <div class="container py-4 d-flex justify-content-center">
+
+
+        <div class="card mb-3 bg-light text-black w-75">
+            <div class="card-header text-white bg-dark" th:text="${title}"></div>
+            <div class="card-body text-dark bg-light row g-0 ">
+
+                <h4 class="card-title">
+                    <a sec:authorize="hasRole('ROLE_ADMIN')" class="btn btn-success btn-xs"
+                        th:href="@{'/invoice/form/' + ${customer.id}}" th:text="#{text.customer.invoice.create}"></a>
+                </h4>
+
+                <img th:if="${#strings.length(customer.image) > 0}" class="img-fluid rounded-start"
+                    style="max-width: 25%;" th:src="@{'/uploads/' + ${customer.image}}" th:alt="${customer.image}" />
+
+                <ul class="list-group border border-dark d-flex flex-column-reverse col-md-9">
+                    <li class="list-group-item d-flex justify-content-between align-items-center disabled"
+                        th:text="${customer.name}"></li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center disabled"
+                        th:text="${customer.surname}"></li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center disabled"
+                        th:text="${customer.email}"></li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center disabled"
+                        th:text="${customer.createAt}"></li>
+                </ul>
+
+                <div th:if="${#lists.isEmpty(customer.invoices)}" class="alert alert-info my-4"
+                    th:text="#{text.customer.detail.no.invoices} + ' ' + ${customer.name} + ' ' + ${customer.surname}">
+                </div>
+
+                <table th:if="${not #lists.isEmpty(customer.invoices)}"
+                    class="table table-success table-striped table-bordered my-4">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th th:text="#{text.customer.invoice.sheet}">#</th>
+                            <th th:text="#{text.customer.invoice.description}">Descripción</th>
+                            <th th:text="#{text.customer.invoice.date}">Fecha</th>
+                            <th th:text="#{text.customer.invoice.note}">Nota</th>
+                            <th th:text="#{text.customer.invoice.total}">Total</th>
+                            <th sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{text.customer.invoice.detail}">Factura
+                            </th>
+                            <th sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{text.customer.invoice.delete}">Eliminar
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each=" factura : ${customer.invoices}">
+                            <td th:text="${factura.id}"></td>
+                            <td th:text="${factura.description}"></td>
+                            <td th:text="${factura.createAt}"></td>
+                            <td th:text="${factura.note}"></td>
+                            <td th:text="${factura.totalInvoice}"></td>
+                            <td sec:authorize="hasRole('ROLE_ADMIN')"><a
+                                    class="btn btn-primary btn-sm d-sm-flex bg-primary float-md-rigt text-center"
+                                    th:href="@{'/invoice/detail/' + ${factura.id}}"
+                                    th:text="#{text.customer.invoice.detail}"></a></td>
+                            <td sec:authorize="hasRole('ROLE_ADMIN')"><a
+                                    class="btn btn-danger btn-sm d-sm-flex bg-danger float-md-rigt text-center"
+                                    th:href="@{'/invoice/delete/' + ${factura.id}}"
+                                    th:text="#{text.customer.invoice.delete}"
+                                    onclick="return confirm(document.getElementById('i18n_eliminar_factura').innerHTML);"></a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4 class="card-title">
+                    <a class="btn btn-secondary btn-xs mb-3" th:href="@{'/list/'}"
+                        th:text="#{text.global.back}">&laquo;volver</a>
+                </h4>
+
+            </div>
+        </div>
+    </div>
+
+
+    <footer th:replace="layout/layout :: footer"></footer>
+
+</body>
+
+</html>

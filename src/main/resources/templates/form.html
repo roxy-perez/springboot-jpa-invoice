@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="layout/layout :: head"></head>
+
+<body>
+    <header th:replace="layout/layout :: header"></header>
+
+    <div class="container py-4">
+
+        <div class="card mb-3 bg-light text-black w-75">
+            <div class="card-header text-white bg-dark mb-3" th:text="${title}"></div>
+            <div class="card-body">
+
+                <div th:object="${customer}" th:remove="tag">
+                    <ul th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+                        <li th:each=" err: ${#fields.errors('*')}" th:text="${err}">
+                        </li>
+                    </ul>
+                </div>
+
+                <form th:action="@{/form}" th:object="${customer}" method="post" enctype="multipart/form-data">
+
+                    <div class="form-group row mb-3">
+                        <label class="col-sm-2 col-form-label" th:text="#{text.customer.name}">Nombre</label>
+                        <div class="col-sm-6">
+                            <input type="text" th:field="*{name}" class="form-control"
+                                th:errorclass="'form-control alert-danger'" />
+                            <small class="form-text text-danger" th:if="${#fields.hasErrors('name')}"
+                                th:errors="*{name}"></small>
+                        </div>
+                    </div>
+
+                    <div class="form-group row mb-3">
+                        <label class="col-sm-2 col-form-label" th:text="#{text.customer.surname}">Apellido</label>
+                        <div class="col-sm-6">
+                            <input type="text" th:field="*{surname}" class="form-control"
+                                th:errorclass="'form-control alert-danger'" />
+                            <small class="form-text text-danger" th:if="${#fields.hasErrors('surname')}"
+                                th:errors="*{surname}"></small>
+                        </div>
+                    </div>
+
+                    <div class="form-group row mb-3">
+                        <label class="col-sm-2 col-form-label" th:text="#{text.customer.email}">Email</label>
+                        <div class="col-sm-6">
+                            <input type="text" th:field="*{email}" class="form-control"
+                                th:errorclass="'form-control alert-danger'" />
+                            <small class="form-text text-danger" th:if="${#fields.hasErrors('email')}"
+                                th:errors="*{email}"></small>
+                        </div>
+                    </div>
+
+                    <div class="form-group row mb3">
+                        <label class="col-sm-2 col-form-label" th:text="#{text.customer.createAt}">Fecha</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" th:field="*{createAt}"
+                                th:errorclass="'form-control alert-danger'" />
+                            <small class="form-text text-danger" th:if="${#fields.hasErrors('createAt')}"
+                                th:errors="*{createAt}"></small>
+                        </div>
+                    </div>
+
+                    <div class="form-group row mb3">
+                        <label for="file" class="col-sm-2 col-form-label" th:text="#{text.customer.image}">Imagen</label>
+                        <div class="col-sm-6">
+                            <input type="file" name="file" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row mt-4">
+                        <div class="col-sm-6">
+                            <input type="submit" value="Crear cliente" class="btn btn-success text-white" />
+
+                        </div>
+                    </div>
+
+                    </table>
+                    <!-- Para no tratar el id en la vista, mejor usar el sessionAtribute en el controlador
+                <input type="hidden" th:field="*{id}" />-->
+                </form>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+    <footer th:replace="layout/layout :: footer"></footer>
+
+</body>
+
+</html>
