@@ -1,5 +1,5 @@
 # springboot-jpa-invoice
-## Roxy Invoice
+## Roxy Invoicing
 
 App made using the following frameworks and languages:
 - Thymeleaf
