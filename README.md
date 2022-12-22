@@ -13,3 +13,6 @@ App made using the following frameworks and languages:
 - Java 11
 - MySQL
 
+### Usuarios para probar la app
+- admin: 12345, puede crear Clientes y Facturas
+- roxy: 12345, usuario de lectura
